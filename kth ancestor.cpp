@@ -1,24 +1,42 @@
-void solve(Node *root, int k, int &count,vector<int>path){
-    if(root==NULL)
-    return;
-    
-    path.push_back(root->data);
-    solve(root->left,k,count,path);
-    solve(root->right,k,count,path);
-    
-    int size= path.size();
-    int sum=0;
-    for(int i=size-1;i>=0;i--){
-        sum = sum+path[i];
-        if(sum==k)
-        count++;
+Node* solve(Node* root,int &k, int node){
+    //base case
+    if(root==NULL){
+        return NULL;
     }
-    path.pop_back();
+    if(root->data==node){
+        return root;
+    }    
+    Node* leftans= solve(root->left, k, node);
+    Node* rightans= solve(root->right,k,node);
+    // wapas jaogey
+    if(leftans!=NULL && rightans==NULL){
+        k--;
+        if(k<=0){
+            // answer ko lock krdia
+            k=INT_MAX;
+            return root;
+        }
+        return leftans;
+    }
+     if(rightans!=NULL && rightans==NULL){
+        k--;
+        if(k<=0){
+            // answer ko lock krdia
+            k=INT_MAX;
+            return root;
+        }
+        return rightans;
+    }
+return NULL;
+    
 }
+
 int kthAncestor(Node *root, int k, int node)
 {
-    vector<int>path;
-    int count=0;
-    solve(root,k,count,path);
-    return count;
+    // Code here
+    Node* ans= solve(root,k,node);
+    if(ans==NULL || ans->data==node)
+    return -1;
+    else
+    return ans->data;
 }
